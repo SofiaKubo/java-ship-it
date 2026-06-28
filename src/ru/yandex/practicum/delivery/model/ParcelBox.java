@@ -24,8 +24,10 @@ public class ParcelBox<T extends Parcel> {
         validateParcel(parcel);
 
         if (!hasEnoughSpaceFor(parcel)) {
+            System.out.println("Посылка не может быть добавлена: коробка переполнена.");
             return false;
         }
+
         parcels.add(parcel);
         return true;
     }

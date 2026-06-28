@@ -23,8 +23,6 @@ public class FragileParcel extends Parcel implements Trackable {
 
     @Override
     public void reportStatus(String newLocation) {
-        validateNewLocation(newLocation);
-
         System.out.printf(
                 "Хрупкая посылка %s изменила местоположение на %s%n",
                 getDescription(),
@@ -35,13 +33,5 @@ public class FragileParcel extends Parcel implements Trackable {
     @Override
     protected int getPricePerKg() {
         return PRICE_PER_KG;
-    }
-
-    private static void validateNewLocation(String newLocation) {
-        if (newLocation == null || newLocation.isBlank()) {
-            throw new IllegalArgumentException(
-                    "Новое местоположение не может быть пустым."
-            );
-        }
     }
 }

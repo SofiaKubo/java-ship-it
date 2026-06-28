@@ -79,13 +79,12 @@ public class DeliveryApp {
                             timeToLive
                     );
                 }
-                default -> throw new IllegalStateException("Неизвестный тип посылки.");
+                default ->
+                        throw new IllegalStateException("Неизвестный тип посылки.");
             };
 
             if (deliveryService.addParcel(parcel)) {
                 System.out.println("Посылка успешно добавлена.");
-            } else {
-                System.out.println("Посылка не может быть добавлена: коробка переполнена.");
             }
         } catch (IllegalArgumentException exception) {
             System.out.println("Ошибка ввода: " + exception.getMessage());
@@ -118,7 +117,8 @@ public class DeliveryApp {
             case 1 -> deliveryService.getStandardParcels();
             case 2 -> deliveryService.getFragileParcels();
             case 3 -> deliveryService.getPerishableParcels();
-            default -> throw new IllegalStateException("Неизвестный тип коробки.");
+            default ->
+                    throw new IllegalStateException("Неизвестный тип коробки.");
         };
 
         if (parcels.isEmpty()) {
