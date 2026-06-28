@@ -2,6 +2,7 @@ package ru.yandex.practicum.delivery.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import ru.yandex.practicum.delivery.model.FragileParcel;
 import ru.yandex.practicum.delivery.model.PerishableParcel;
 import ru.yandex.practicum.delivery.model.StandardParcel;
@@ -41,7 +42,13 @@ public class DeliveryServiceTest {
 
     @Test
     void addParcelShouldAddPerishableParcelToPerishableBox() {
-        PerishableParcel perishableParcel = new PerishableParcel("Йогурт", 3, "Москва", 3, 2);
+        PerishableParcel perishableParcel = new PerishableParcel(
+                "Йогурт",
+                3,
+                "Москва",
+                3,
+                2
+        );
 
         boolean result = deliveryService.addParcel(perishableParcel);
 
@@ -67,7 +74,13 @@ public class DeliveryServiceTest {
     void calculateTotalCostShouldReturnSumForAllAddedParcels() {
         StandardParcel standardParcel = new StandardParcel("Документы", 5, "Москва", 3);
         FragileParcel fragileParcel = new FragileParcel("Ваза", 3, "Москва", 3);
-        PerishableParcel perishableParcel = new PerishableParcel("Йогурт", 4, "Москва", 3, 2);
+        PerishableParcel perishableParcel = new PerishableParcel(
+                "Йогурт",
+                4,
+                "Москва",
+                3,
+                2
+        );
 
         deliveryService.addParcel(standardParcel);
         deliveryService.addParcel(fragileParcel);

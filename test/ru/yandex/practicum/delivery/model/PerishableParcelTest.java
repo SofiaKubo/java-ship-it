@@ -6,15 +6,21 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PerishableParcelTest {
-    private PerishableParcel perishableParcel;
-
     private static final int SEND_DAY = 10;
     private static final int TIME_TO_LIVE = 3;
     private static final int EXPIRATION_DAY = SEND_DAY + TIME_TO_LIVE;
 
+    private PerishableParcel perishableParcel;
+
     @BeforeEach
     void setUp() {
-        perishableParcel = new PerishableParcel("Йогурт", 2, "Москва", SEND_DAY, TIME_TO_LIVE);
+        perishableParcel = new PerishableParcel(
+                "Йогурт",
+                2,
+                "Москва",
+                SEND_DAY,
+                TIME_TO_LIVE
+        );
     }
 
     @Test

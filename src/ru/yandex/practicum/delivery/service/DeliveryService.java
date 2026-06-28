@@ -1,14 +1,14 @@
 package ru.yandex.practicum.delivery.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ru.yandex.practicum.delivery.model.FragileParcel;
 import ru.yandex.practicum.delivery.model.Parcel;
 import ru.yandex.practicum.delivery.model.ParcelBox;
 import ru.yandex.practicum.delivery.model.PerishableParcel;
 import ru.yandex.practicum.delivery.model.StandardParcel;
 import ru.yandex.practicum.delivery.model.Trackable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DeliveryService {
     private static final int MAX_STANDARD_BOX_WEIGHT = 50;
@@ -28,12 +28,9 @@ public class DeliveryService {
         validateParcel(parcel);
 
         boolean isParcelAdded = switch (parcel) {
-            case StandardParcel standardParcel ->
-                    standardBox.addParcel(standardParcel);
-            case FragileParcel fragileParcel ->
-                    fragileBox.addParcel(fragileParcel);
-            case PerishableParcel perishableParcel ->
-                    perishableBox.addParcel(perishableParcel);
+            case StandardParcel standardParcel -> standardBox.addParcel(standardParcel);
+            case FragileParcel fragileParcel -> fragileBox.addParcel(fragileParcel);
+            case PerishableParcel perishableParcel -> perishableBox.addParcel(perishableParcel);
             default -> throw new IllegalArgumentException(
                     "Неподдерживаемый тип посылки: " +
                             parcel.getClass().getSimpleName()

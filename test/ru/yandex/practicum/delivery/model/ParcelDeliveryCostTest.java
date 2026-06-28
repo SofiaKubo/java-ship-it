@@ -1,6 +1,7 @@
 package ru.yandex.practicum.delivery.model;
 
 import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ParcelDeliveryCostTest {
@@ -24,7 +25,13 @@ public class ParcelDeliveryCostTest {
 
     @Test
     void perishableParcelShouldCalculateDeliveryCost() {
-        PerishableParcel perishableParcel = new PerishableParcel("Паштет", 5, "Москва", 23, 2);
+        PerishableParcel perishableParcel = new PerishableParcel(
+                "Паштет",
+                5,
+                "Москва",
+                23,
+                2
+        );
 
         int actualCost = perishableParcel.calculateDeliveryCost();
 

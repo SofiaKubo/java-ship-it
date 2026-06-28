@@ -79,8 +79,7 @@ public class DeliveryApp {
                             timeToLive
                     );
                 }
-                default ->
-                        throw new IllegalStateException("Неизвестный тип посылки.");
+                default -> throw new IllegalStateException("Неизвестный тип посылки.");
             };
 
             if (deliveryService.addParcel(parcel)) {
@@ -119,8 +118,7 @@ public class DeliveryApp {
             case 1 -> deliveryService.getStandardParcels();
             case 2 -> deliveryService.getFragileParcels();
             case 3 -> deliveryService.getPerishableParcels();
-            default ->
-                    throw new IllegalStateException("Неизвестный тип коробки.");
+            default -> throw new IllegalStateException("Неизвестный тип коробки.");
         };
 
         if (parcels.isEmpty()) {
