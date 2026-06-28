@@ -2,6 +2,7 @@ package ru.yandex.practicum.delivery;
 
 import java.util.List;
 import java.util.Scanner;
+
 import ru.yandex.practicum.delivery.model.FragileParcel;
 import ru.yandex.practicum.delivery.model.Parcel;
 import ru.yandex.practicum.delivery.model.PerishableParcel;
@@ -14,37 +15,19 @@ public class DeliveryApp {
 
     public static void main(String[] args) {
         boolean running = true;
+
         while (running) {
             showMenu();
-            int choice;
-            try {
-                choice = Integer.parseInt(scanner.nextLine());
-            } catch (NumberFormatException exception) {
-                System.out.println("Ошибка ввода: выберите пункт меню числом.");
-                continue;
-            }
+            int choice = readIntInRange("Введите номер действия от 0 до 5:", 0, 5);
 
             switch (choice) {
-                case 1:
-                    addParcel();
-                    break;
-                case 2:
-                    deliveryService.sendParcels();
-                    break;
-                case 3:
-                    calculateCosts();
-                    break;
-                case 4:
-                    updateTrackableItemsLocation();
-                    break;
-                case 5:
-                    showBoxContents();
-                    break;
-                case 0:
-                    running = false;
-                    break;
-                default:
-                    System.out.println("Неверный выбор.");
+                case 1 -> addParcel();
+                case 2 -> deliveryService.sendParcels();
+                case 3 -> calculateCosts();
+                case 4 -> updateTrackableItemsLocation();
+                case 5 -> showBoxContents();
+                case 0 -> running = false;
+                default -> System.out.println("Неверный выбор.");
             }
         }
     }
@@ -66,71 +49,45 @@ public class DeliveryApp {
             System.out.println("2 — Хрупкая посылка");
             System.out.println("3 — Скоропортящаяся посылка");
 
-            int parcelType = Integer.parseInt(scanner.nextLine());
+            int parcelType = readIntInRange("Введите тип посылки от 1 до 3:", 1, 3);
 
-            if (parcelType < 1 || parcelType > 3) {
-                System.out.println("Неверный тип посылки.");
-                return;
-            }
+            String description = readRequiredString("Введите описание посылки:");
+            int weight = readPositiveInt("Введите вес посылки:");
+            String deliveryAddress = readRequiredString("Введите адрес доставки:");
+            int sendDay = readPositiveInt("Введите день отправки:");
 
-            System.out.println("Введите описание посылки:");
-            String description = scanner.nextLine();
-
-            System.out.println("Введите вес посылки:");
-            int weight = Integer.parseInt(scanner.nextLine());
-
-            System.out.println("Введите адрес доставки:");
-            String deliveryAddress = scanner.nextLine();
-
-            System.out.println("Введите день отправки:");
-            int sendDay = Integer.parseInt(scanner.nextLine());
-
-            Parcel parcel;
-
-            switch (parcelType) {
-                case 1:
-                    parcel = new StandardParcel(
-                            description,
-                            weight,
-                            deliveryAddress,
-                            sendDay
-                    );
-                    break;
-                case 2:
-                    parcel = new FragileParcel(
-                            description,
-                            weight,
-                            deliveryAddress,
-                            sendDay
-                    );
-                    break;
-                case 3:
-                    System.out.println("Введите срок хранения посылки:");
-                    int timeToLive = Integer.parseInt(scanner.nextLine());
-                    parcel = new PerishableParcel(
+            Parcel parcel = switch (parcelType) {
+                case 1 -> new StandardParcel(
+                        description,
+                        weight,
+                        deliveryAddress,
+                        sendDay
+                );
+                case 2 -> new FragileParcel(
+                        description,
+                        weight,
+                        deliveryAddress,
+                        sendDay
+                );
+                case 3 -> {
+                    int timeToLive = readPositiveInt("Введите срок хранения посылки:");
+                    yield new PerishableParcel(
                             description,
                             weight,
                             deliveryAddress,
                             sendDay,
                             timeToLive
                     );
-                    break;
-                default:
-                    System.out.println("Неверный тип посылки.");
-                    return;
-            }
+                }
+                default ->
+                        throw new IllegalStateException("Неизвестный тип посылки.");
+            };
 
             if (deliveryService.addParcel(parcel)) {
                 System.out.println("Посылка успешно добавлена.");
             } else {
-                System.out.println(
-                        "Посылка не может быть добавлена: коробка переполнена."
-                );
+                System.out.println("Посылка не может быть добавлена: коробка переполнена.");
             }
-        } catch (NumberFormatException exception) {
-            System.out.println(
-                    "Ошибка ввода: в числовое поле нужно ввести целое число."
-            );
         } catch (IllegalArgumentException exception) {
             System.out.println("Ошибка ввода: " + exception.getMessage());
         }
@@ -143,9 +100,7 @@ public class DeliveryApp {
 
     private static void updateTrackableItemsLocation() {
         try {
-            System.out.println("Введите новое местоположение отправлений:");
-            String newLocation = scanner.nextLine();
-
+            String newLocation = readRequiredString("Введите новое местоположение отправлений:");
             deliveryService.updateTrackableItemsLocation(newLocation);
         } catch (IllegalArgumentException exception) {
             System.out.println("Ошибка ввода: " + exception.getMessage());
@@ -153,42 +108,84 @@ public class DeliveryApp {
     }
 
     private static void showBoxContents() {
-        try {
-            System.out.println("Выберите тип коробки:");
-            System.out.println("1 — Коробка стандартных посылок");
-            System.out.println("2 — Коробка хрупких посылок");
-            System.out.println("3 — Коробка скоропортящихся посылок");
+        System.out.println("Выберите тип коробки:");
+        System.out.println("1 — Коробка стандартных посылок");
+        System.out.println("2 — Коробка хрупких посылок");
+        System.out.println("3 — Коробка скоропортящихся посылок");
 
-            int boxType = Integer.parseInt(scanner.nextLine());
+        int boxType = readIntInRange("Введите тип коробки от 1 до 3:", 1, 3);
 
-            List<? extends Parcel> parcels;
+        List<? extends Parcel> parcels = switch (boxType) {
+            case 1 -> deliveryService.getStandardParcels();
+            case 2 -> deliveryService.getFragileParcels();
+            case 3 -> deliveryService.getPerishableParcels();
+            default ->
+                    throw new IllegalStateException("Неизвестный тип коробки.");
+        };
 
-            switch (boxType) {
-                case 1:
-                    parcels = deliveryService.getStandardParcels();
-                    break;
-                case 2:
-                    parcels = deliveryService.getFragileParcels();
-                    break;
-                case 3:
-                    parcels = deliveryService.getPerishableParcels();
-                    break;
-                default:
-                    System.out.println("Неверный тип коробки.");
-                    return;
+        if (parcels.isEmpty()) {
+            System.out.println("Коробка пуста.");
+            return;
+        }
+
+        System.out.println("Содержимое коробки:");
+        for (Parcel parcel : parcels) {
+            System.out.println("- " + parcel.getDescription());
+        }
+    }
+
+    private static int readIntInRange(String prompt, int min, int max) {
+        while (true) {
+            System.out.println(prompt);
+
+            try {
+                int number = Integer.parseInt(scanner.nextLine());
+
+                if (number < min || number > max) {
+                    System.out.println(
+                            "Ошибка ввода: число должно быть от " + min +
+                                    " до " + max + "."
+                    );
+                    continue;
+                }
+
+                return number;
+            } catch (NumberFormatException exception) {
+                System.out.println("Ошибка ввода: нужно ввести целое число.");
+            }
+        }
+    }
+
+    private static int readPositiveInt(String prompt) {
+        while (true) {
+            System.out.println(prompt);
+
+            try {
+                int number = Integer.parseInt(scanner.nextLine());
+
+                if (number <= 0) {
+                    System.out.println("Ошибка ввода: число должно быть положительным.");
+                    continue;
+                }
+
+                return number;
+            } catch (NumberFormatException exception) {
+                System.out.println("Ошибка ввода: нужно ввести целое число.");
+            }
+        }
+    }
+
+    private static String readRequiredString(String prompt) {
+        while (true) {
+            System.out.println(prompt);
+            String value = scanner.nextLine();
+
+            if (value.isBlank()) {
+                System.out.println("Ошибка ввода: значение не может быть пустым.");
+                continue;
             }
 
-            if (parcels.isEmpty()) {
-                System.out.println("Коробка пуста.");
-                return;
-            }
-
-            System.out.println("Содержимое коробки:");
-            for (Parcel parcel : parcels) {
-                System.out.println("- " + parcel.getDescription());
-            }
-        } catch (NumberFormatException exception) {
-            System.out.println("Ошибка ввода: выберите тип коробки числом.");
+            return value.trim();
         }
     }
 }
